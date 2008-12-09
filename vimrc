@@ -22,7 +22,7 @@ set wrapscan                   " searches wrap around the end of the file
 " no bells
 set noerrorbells               " no freaking error bells ever!
 set visualbell                 " turn on error beep/flash
-set t_vb=				       " turn off terminal's visual bell
+set t_vb=                      " turn off terminal's visual bell
 
 " gui options
 set guioptions-=T              " no toolbar icons in gvim (ugly)
