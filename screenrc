@@ -1,0 +1,25 @@
+# stop the flashes thanks
+vbell off
+
+# detach on hangup
+autodetach on
+
+# don't display the copyright page
+startup_message off
+
+# when programs like vi exit don't let them leave their content on the window, like xterm
+altscreen on
+
+# turn utf8 on in all windows
+defutf8 on
+
+# add tabs and stuff at the bottom of the screen
+# see http://gentoo-wiki.com/TIP_Using_screen for more info
+hardstatus alwayslastline
+hardstatus string '%{= dK}%-w%{= dR}%50>%n %t%{-}%+w%< %{= dK}%-=%D %d %M %Y %c:%s%{-}'
+
+# set a big enough scrollback buffer to be useful
+defscrollback 5000
+
+# name each screen based on what it is running
+shelltitle "$ |bash"
