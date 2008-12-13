@@ -21,9 +21,9 @@ set incsearch                  " search as you type
 set wrapscan                   " searches wrap around the end of the file
 
 " no bells
-set noerrorbells        " no freaking error bells ever!
-set visualbell          " turn on error beep/flash
-set t_vb=               " turn off terminal's visual bell
+set noerrorbells               " no freaking error bells ever!
+set visualbell                 " turn on error beep/flash
+set t_vb=                      " turn off terminal's visual bell
 
 " gui options
 set guioptions-=T              " no toolbar icons in gvim (ugly)
@@ -40,15 +40,15 @@ set laststatus=2                            " always show the status line
 
 " tweak statusline highlighting
 highlight StatusLine   term=NONE cterm=NONE ctermfg=darkred ctermbg=lightgrey guifg=darkred guibg=lightgrey
-highlight StatusLineNC term=NONE cterm=NONE ctermfg=black ctermbg=white guifg=black guibg=white 
+highlight StatusLineNC term=NONE cterm=NONE ctermfg=black ctermbg=white guifg=black guibg=white
 highlight User1        term=bold cterm=bold ctermfg=red ctermbg=lightgrey
 
 " set filetype for some more obscure file extensions
-autocmd BufNewFile,BufRead *.t       set filetype=perl
-autocmd BufNewFile,BufRead *.md,*.mh set filetype=mason         " shutterstock convention for mason components
-autocmd BufNewFile,BufRead *.rhtml   set filetype=html          " interpret .rhtml files (embedded ruby templates) as html to get some highlighting
+autocmd BufNewFile,BufRead *.t          set filetype=perl
+autocmd BufNewFile,BufRead *.md,*.mh    set filetype=mason             " shutterstock convention for mason components
+autocmd BufNewFile,BufRead *.rhtml      set filetype=html              " interpret .rhtml files (embedded ruby templates) as html to get some highlighting
 autocmd BufNewFile,BufRead *.yaml,*.yml set filetype=yaml
-autocmd BufNewFile,BufRead *.txt     set tw=78                  " in text files, always limit the width of text to 78 characters
+autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text files, always limit the width of text to 78 characters
 
 " set some options on a per-filetype basis
 "autocmd FileType html,css set expandtab tabstop=2 shiftwidth=2        " for CSS and HTML, indent using 2 spaces
@@ -113,7 +113,7 @@ endif
 " highlight leading spaces (indent with tabs thanks),
 " tabs not at the beginning of the line (allow % as in mason files), and trailing spaces or tabs
 highlight InvalidWhitespace ctermbg=green guibg=green
-match InvalidWhitespace /^ \+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+$/
+match InvalidWhitespace /^ \+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
 
 " plugins
 source $VIMRUNTIME/macros/matchit.vim    " allow % to match anything that filetype plugins can, not just '{' or '(' or '['
