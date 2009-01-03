@@ -12,6 +12,7 @@ let loaded_matchparen = 1      " don't show matching parens in vim 7+
 syntax on                      " turn on syntax highlighting
 filetype indent plugin on      " set indentation rules based on file type and enable filetype plugins (for matchit.vim)
 syntax sync minlines=200       " always sync syntax highlighting at least 200 lines back
+colorscheme desert
 
 " search options
 set hlsearch                   " highlight the search term
@@ -110,10 +111,25 @@ if &term == "screen" || &term == "xterm"
 	set title
 endif
 
-" highlight leading spaces (indent with tabs thanks),
-" tabs not at the beginning of the line (allow % as in mason files), and trailing spaces or tabs
-highlight InvalidWhitespace ctermbg=green guibg=green
-match InvalidWhitespace /^ \+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
+" highlight questionable whitespace differently depending on whether or not expandtab is set
+highlight QuestionableWhitespace ctermbg=green guibg=green
+autocmd BufNewFile,BufRead * call HighlightWhitespace()
+function HighlightWhitespace()
+	if &expandtab
+		" highlight tabs not at the beginning of the line (but allow # for comments and % for mason),
+		" and trailing whitespace not followed by the cursor
+		" (maybe think about highlighting leading spaces not in denominations of tabstop?)
+		match QuestionableWhitespace /\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
+	else
+		" highlight any leading spaces (TODO: ignore spaces in formatted assignment statements),
+		" tabs not at the beginning of the line (but allow # for comments and % for mason),
+		" and trailing whitespace not followed by the cursor
+		match QuestionableWhitespace /^ \+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
+endif
+endfunction
+
+highlight LongLines ctermbg=lightgrey guibg=lightgrey
+autocmd FileType perl,mason 2match LongLines /^.\{160,\}$/
 
 " plugins
 source $VIMRUNTIME/macros/matchit.vim    " allow % to match anything that filetype plugins can, not just '{' or '(' or '['
