@@ -12,7 +12,8 @@ let loaded_matchparen = 1      " don't show matching parens in vim 7+
 syntax on                      " turn on syntax highlighting
 filetype indent plugin on      " set indentation rules based on file type and enable filetype plugins (for matchit.vim)
 syntax sync minlines=200       " always sync syntax highlighting at least 200 lines back
-colorscheme desert
+set t_Co=256                   " use 256 colors
+colorscheme default
 
 " search options
 set hlsearch                   " highlight the search term
@@ -40,9 +41,9 @@ set statusline=%f\ %y%r%m%=line\ %1*%l%*/%L " set up statusline to show file, re
 set laststatus=2                            " always show the status line
 
 " tweak statusline highlighting
-highlight StatusLine   term=NONE cterm=NONE ctermfg=darkred ctermbg=lightgrey guifg=darkred guibg=lightgrey
-highlight StatusLineNC term=NONE cterm=NONE ctermfg=black ctermbg=white guifg=black guibg=white
-highlight User1        term=bold cterm=bold ctermfg=red ctermbg=lightgrey
+highlight StatusLine   term=none cterm=none ctermfg=darkred ctermbg=white guifg=darkred guibg=white
+highlight StatusLineNC term=none cterm=none ctermfg=black ctermbg=white guifg=black guibg=white
+highlight User1        term=bold cterm=bold ctermfg=darkred ctermbg=white
 
 " set filetype for some more obscure file extensions
 autocmd BufNewFile,BufRead *.t          set filetype=perl
@@ -111,7 +112,8 @@ if &term == "screen" || &term == "xterm"
 	set title
 endif
 
-" highlight questionable whitespace differently depending on whether or not expandtab is set
+" highlight questionable whitespace differently depending on whether
+" or not expandtab is set
 highlight QuestionableWhitespace ctermbg=green guibg=green
 autocmd BufNewFile,BufRead * call HighlightWhitespace()
 function HighlightWhitespace()
@@ -125,11 +127,14 @@ function HighlightWhitespace()
 		" tabs not at the beginning of the line (but allow # for comments and % for mason),
 		" and trailing whitespace not followed by the cursor
 		match QuestionableWhitespace /^ \+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
-endif
+	endif
 endfunction
 
+" highlight long lines - see http://vim.wikia.com/wiki/Highlight_long_lines
 highlight LongLines ctermbg=lightgrey guibg=lightgrey
-autocmd FileType perl,mason 2match LongLines /^.\{160,\}$/
+"autocmd FileType perl,mason 2match LongLines /^.\{160,\}$/
+"autocmd BufWinEnter * let w:m1=matchadd('Search', '\%<121v.\%>77v', -1)
+autocmd BufWinEnter * let w:m2=matchadd('LongLines', '\%>120v.\+', -1)
 
 " plugins
 source $VIMRUNTIME/macros/matchit.vim    " allow % to match anything that filetype plugins can, not just '{' or '(' or '['
