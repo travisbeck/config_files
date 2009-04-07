@@ -6,14 +6,15 @@ set shiftwidth=4               " number of spaces to use for each step of (auto)
 set whichwrap=b,s,h,l,<,>,[,]  " allow the cursor to wrap on anything
 set backspace=2                " fully enable backspace to delete anything in insert mode
 set noshowmatch                " don't go back to the matching bracket (annoying)
-let loaded_matchparen = 1      " don't show matching parens in vim 7+
+"let loaded_matchparen = 1      " don't show matching parens in vim 7+
 
 " enable syntax highlighting
 syntax on                      " turn on syntax highlighting
 filetype indent plugin on      " set indentation rules based on file type and enable filetype plugins (for matchit.vim)
 syntax sync minlines=200       " always sync syntax highlighting at least 200 lines back
 set t_Co=256                   " use 256 colors
-colorscheme default
+"colorscheme default
+colorscheme travis
 
 " search options
 set hlsearch                   " highlight the search term
@@ -40,10 +41,8 @@ set diffopt+=iwhite            " ignore whitespace in diffmode
 set statusline=%f\ %y%r%m%=line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
 set laststatus=2                            " always show the status line
 
-" tweak statusline highlighting
-highlight StatusLine   term=none cterm=none ctermfg=darkred ctermbg=white guifg=darkred guibg=white
-highlight StatusLineNC term=none cterm=none ctermfg=black ctermbg=white guifg=black guibg=white
-highlight User1        term=bold cterm=bold ctermfg=darkred ctermbg=white
+" boldify the line number in the status line
+hi User1 cterm=bold ctermfg=196 ctermbg=255 gui=bold guifg=#ff0000 guibg=#eeeeee
 
 " set filetype for some more obscure file extensions
 autocmd BufNewFile,BufRead *.t          set filetype=perl
