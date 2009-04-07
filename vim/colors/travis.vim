@@ -85,8 +85,8 @@ hi VertSplit cterm=none ctermfg=245 ctermbg=255 gui=none guifg=#8a8a8a guibg=#ee
 hi NonText ctermfg=31 guifg=#0087af
 
 " just boldify the parenthese, to make it slightly clearer, don't knock me over the head or anything
-hi clear MatchParen
-hi MatchParen cterm=bold gui=bold
+"hi clear MatchParen
+"hi MatchParen term=bold cterm=bold gui=bold
 
 " stuff I haven't gotten around to defining yet
 "hi Directory guifg=blue
