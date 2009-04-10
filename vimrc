@@ -60,7 +60,7 @@ autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text
 autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
 autocmd FileType perl,mason set iskeyword+=: path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
 
-" toggle a comment at the beginning of the line
+" toggle a comment for a line
 " see http://www.perlmonks.org/?node_id=561215 for more info
 function ToggleComment()
 	let comment_start = '#'
@@ -80,7 +80,10 @@ function ToggleComment()
 		let comment_start = '\/\/'
 	endif
 
-	if getline('.') =~ ('^' . comment_start)
+	" if the comment start is at the beginning of the line and isn't followed
+	" by a space (i.e. the most likely form of an actual comment, to keep from
+	" uncommenting real comments
+	if getline('.') =~ ('^' . comment_start . '\( \w\)\@!')
 		execute 's/^' . comment_start . '//'
 		execute 's/' . comment_end . '$//'
 	else
