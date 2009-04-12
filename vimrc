@@ -31,7 +31,7 @@ set wrapscan                   " searches wrap around the end of the file
 
 " no bells
 set noerrorbells               " no freaking error bells ever!
-set visualbell                 " turn on error beep/flash
+set visualbell                 " turn on error beep/flash (turns off the audible bell)
 set t_vb=                      " turn off terminal's visual bell
 
 " gui options
@@ -39,9 +39,9 @@ set guioptions-=T              " no toolbar icons in gvim (ugly)
 set mousehide                  " hide the mouse pointer while typing
 
 " fix completion modes
-set completeopt+=longest       " insert any common text for insert completion
-set wildmode=longest,list      " in ex mode, complete longest common string, then list alternatives (like bash)
-set diffopt+=iwhite            " ignore whitespace in diffmode
+set completeopt=menu,preview,longest " insert any common text for insert completion (and show a menu)
+set wildmode=longest,list            " in ex mode, complete longest common string, then list alternatives (like bash)
+set diffopt+=iwhite                  " ignore whitespace in diffmode
 
 " set up a real statusline
 set statusline=%f\ %y%r%m%=col\ %c\ line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
@@ -103,6 +103,22 @@ function InsertTabWrapper()
 	endif
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+" set up emacs/readline style command line editing keys (see :help emacs-keys)
+" start of line
+cnoremap <C-A>    <Home>
+" end of line
+cnoremap <C-E>    <End>
+" back one character
+cnoremap <C-B>    <Left>
+" forward one character
+cnoremap <C-F>    <Right>
+" delete character under cursor
+cnoremap <C-D>    <Del>
+"" back one word
+"cnoremap <M-B>    <S-Left>
+"" forward one word
+"cnoremap <M-F>    <S-Right>
 
 " set filename in the screen status line if we are using screen
 " see http://www.vim.org/tips/tip.php?tip_id=1126
