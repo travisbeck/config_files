@@ -58,7 +58,7 @@ autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text
 "autocmd FileType html,css set expandtab tabstop=2 shiftwidth=2        " for CSS and HTML, indent using 2 spaces
 "autocmd FileType mason set tabstop=2 shiftwidth=2                     " for mason files, tabs are 2 spaces wide (cause that's dan's preference)
 autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
-autocmd FileType perl,mason set iskeyword+=: path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
+autocmd FileType perl,mason set path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
 
 " toggle a comment for a line
 " see http://www.perlmonks.org/?node_id=561215 for more info
@@ -108,12 +108,12 @@ inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 " see http://www.vim.org/tips/tip.php?tip_id=1126
 autocmd BufEnter * let &titlestring = expand("%:t")
 
-if &term == "screen"
+if &term == "screen" || &term == "screen-bce"
 	set t_ts=k
 	set t_fs=\
 endif
 
-if &term == "screen" || &term == "xterm"
+if &term == "screen" || &term == "xterm" || &term == "screen-bce"
 	set title
 endif
 
@@ -139,7 +139,10 @@ endfunction
 highlight LongLines ctermbg=lightgrey guibg=lightgrey
 "autocmd FileType perl,mason 2match LongLines /^.\{160,\}$/
 "autocmd BufWinEnter * let w:m1=matchadd('Search', '\%<121v.\%>77v', -1)
-autocmd BufWinEnter * let w:m2=matchadd('LongLines', '\%>120v.\+', -1)
+"autocmd BufWinEnter * let w:m2=matchadd('LongLines', '\%>120v.\+', -1)
 
 " plugins
 source $VIMRUNTIME/macros/matchit.vim    " allow % to match anything that filetype plugins can, not just '{' or '(' or '['
+
+" figure out a way to open multiple buffers by default in vertical split
+"vertical ball                            " if multiple buffers were opened, vertically split the screen to show all of them
