@@ -119,6 +119,11 @@ cnoremap <C-D>    <Del>
 "cnoremap <M-B>    <S-Left>
 "" forward one word
 "cnoremap <M-F>    <S-Right>
+" remap ctrl-p/ctrl-n in command mode to take whatever text has already been
+" entered and search with that (what up/down do by default)
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
 
 " set filename in the screen status line if we are using screen
 " see http://www.vim.org/tips/tip.php?tip_id=1126
