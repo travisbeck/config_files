@@ -52,6 +52,7 @@ autocmd BufNewFile,BufRead *.t          set filetype=perl
 autocmd BufNewFile,BufRead *.md,*.mh    set filetype=mason             " shutterstock convention for mason components
 autocmd BufNewFile,BufRead *.rhtml      set filetype=html              " interpret .rhtml files (embedded ruby templates) as html to get some highlighting
 autocmd BufNewFile,BufRead *.yaml,*.yml set filetype=yaml
+autocmd BufNewFile,BufRead *.pde        set filetype=cpp               " arduino cpp files
 autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text files, always limit the width of text to 78 characters
 
 " set some options on a per-filetype basis
@@ -60,35 +61,36 @@ autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text
 autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
 autocmd FileType perl,mason set path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
 
+function GetCommentChar()
+	let comment = {}
+	let comment.sql    = '--'
+	let comment.vim    = '"'
+	let comment.css    = [ '\/\*', '\*\/' ]
+	let comment.cpp    = '\/\/'
+
+	if !has_key(comment, &filetype)
+		return [ '#', '' ]
+	elseif type(comment[&filetype]) == type([])
+		return comment[&filetype]
+	elseif type(comment[&filetype]) == type('')
+		return [ comment[&filetype], '' ]
+	endif
+endfunction
+autocmd BufNewFile,BufRead * let [ b:comment_start, b:comment_end ] = GetCommentChar()
+
 " toggle a comment for a line
 " see http://www.perlmonks.org/?node_id=561215 for more info
 function ToggleComment()
-	let comment_start = '#'
-	let comment_end   = ''
-
-	if &filetype == 'sql'
-		let comment_start = '--'
-	endif
-	if &filetype == 'vim'
-		let comment_start = '"'
-	endif
-	if &filetype == 'css'
-		let comment_start = '\/\* '
-		let comment_end   = ' \*\/'
-	endif
-	if &filetype == 'javascript'
-		let comment_start = '\/\/'
-	endif
 
 	" if the comment start is at the beginning of the line and isn't followed
 	" by a space (i.e. the most likely form of an actual comment, to keep from
 	" uncommenting real comments
-	if getline('.') =~ ('^' . comment_start . '\( \w\)\@!')
-		execute 's/^' . comment_start . '//'
-		execute 's/' . comment_end . '$//'
+	if getline('.') =~ ('^' . b:comment_start . '\( \w\)\@!')
+		execute 's/^' . b:comment_start . '//'
+		execute 's/' . b:comment_end . '$//'
 	else
-		s/^/\=comment_start/
-		s/$/\=comment_end/
+		s/^/\=b:comment_start/
+		s/$/\=b:comment_end/
 	endif
 endfunction
 map <silent> X :call ToggleComment()<cr>j
