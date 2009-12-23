@@ -32,7 +32,23 @@ export CLICOLOR=true
 export HISTSIZE=5000
 export HISTFILESIZE=5000
 
+export HISTCONTROL=ignoreboth
+shopt -s histappend
+
 # print the version of a perl module
 pmversion () {
 	perl -MUNIVERSAL::require -e "$1->require; print \"$1 -> version \" . $1->VERSION . \"\n\""
 }
+
+# if keychain exists, set up auth
+if type -P keychain &>/dev/null; then
+	auth () {
+		keychain -q --timeout 480 id_rsa
+		[ -f $HOME/.keychain/$HOSTNAME-sh ] && . $HOME/.keychain/$HOSTNAME-sh
+	}
+	reauth () {
+		keychain -k mine
+		auth
+	}
+	auth
+fi
