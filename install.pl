@@ -11,13 +11,14 @@ use File::Path qw( mkpath );
 
 # inspired by install.sh in http://github.com/jferris/config_files
 
-my $local_config_pattern = qr/([^\n]*START LOCAL CONFIGURATION[^\n]*\n.*?[^\n*]END LOCAL CONFIGURATION[^\n]*\n)/ms;
+my $local_config_pattern = qr/([^\n]*START LOCAL CONFIG[^\n]*\n.*?[^\n*]END LOCAL CONFIG[^\n]*\n)/ms;
 
 my $target_dir = abs_path(shift or $ENV{HOME});
 $target_dir =~ s/\/$//;
 
 die "$target_dir is not a directory that exists" if !-d $target_dir;
 
+# symlinks aren't supported on all OSs, so check for that here
 my $can_symlink = eval { symlink('', ''); 1 };
 
 my ($script_name, $repos_dir) = fileparse abs_path $0;
