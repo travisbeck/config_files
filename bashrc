@@ -20,7 +20,7 @@ export PERSONAL_KEY='iBl5x/zfr2BNAJbFfz/NngA==aslovelyz0ewoiuew78634234etf4v0'
 export EDITOR=`which vim`
 
 # add some stuff to my path
-export PATH=~/doc/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
 # for x11
 export DISPLAY=:0.0
@@ -32,8 +32,15 @@ export CLICOLOR=true
 export HISTSIZE=5000
 export HISTFILESIZE=5000
 
+# don't store duplicate commands in bash history
 export HISTCONTROL=ignoreboth
+
+# append bash history after every command (so multiple terminals share the same history)
 shopt -s histappend
+export PROMPT_COMMAND='history -a'
+
+# multi-line commands should be stored as a single command
+shopt -s cmdhist
 
 # print the version of a perl module
 pmversion () {
@@ -41,14 +48,14 @@ pmversion () {
 }
 
 # if keychain exists, set up auth
-if type -P keychain &>/dev/null; then
-	auth () {
-		keychain -q --timeout 480 id_rsa
-		[ -f $HOME/.keychain/$HOSTNAME-sh ] && . $HOME/.keychain/$HOSTNAME-sh
-	}
-	reauth () {
-		keychain -k mine
-		auth
-	}
-	auth
-fi
+#if type -P keychain &>/dev/null; then
+#	auth () {
+#		keychain -q --timeout 480 id_rsa
+#		[ -f $HOME/.keychain/$HOSTNAME-sh ] && . $HOME/.keychain/$HOSTNAME-sh
+#	}
+#	reauth () {
+#		keychain -k mine
+#		auth
+#	}
+#	auth
+#fi
