@@ -6,6 +6,7 @@ set shiftwidth=4               " number of spaces to use for each step of (auto)
 set whichwrap=b,s,h,l,<,>,[,]  " allow the cursor to wrap on anything
 set backspace=2                " fully enable backspace to delete anything in insert mode
 set noshowmatch                " don't go back to the matching bracket (annoying)
+set exrc                       " use a local vimrc on a per-directory basis (for Vroom::Vroom support)
 
 " enable syntax highlighting
 syntax on                      " turn on syntax highlighting
