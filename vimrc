@@ -60,6 +60,8 @@ autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text
 "autocmd FileType html,css set expandtab tabstop=2 shiftwidth=2        " for CSS and HTML, indent using 2 spaces
 "autocmd FileType mason set tabstop=2 shiftwidth=2                     " for mason files, tabs are 2 spaces wide (cause that's dan's preference)
 autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
+autocmd FileType javascript set expandtab tabstop=2 shiftwidth=2       " for javascript, always use two spaces to indent
+autocmd FileType python set expandtab                                  " for python, indent with spaces
 autocmd FileType perl,mason set path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
 
 function GetCommentChar()
@@ -68,6 +70,7 @@ function GetCommentChar()
 	let comment.vim    = '"'
 	let comment.css    = [ '\/\*', '\*\/' ]
 	let comment.cpp    = '\/\/'
+	let comment.javascript = '\/\/'
 
 	if !has_key(comment, &filetype)
 		return [ '#', '' ]
