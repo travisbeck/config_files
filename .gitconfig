@@ -1,0 +1,14 @@
+[user]
+	email = travis@brontosaurus.net
+	name = Travis Beck
+	editor = vim
+[merge]
+	tool = vimdiff
+[push]
+	default = tracking
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[core]
+	whitespace = trailing-space,space-before-tab,indent-with-non-tab,cr-at-eol
