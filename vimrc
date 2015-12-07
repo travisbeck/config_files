@@ -53,6 +53,7 @@ autocmd BufNewFile,BufRead *.t          set filetype=perl
 autocmd BufNewFile,BufRead *.md,*.mh    set filetype=mason             " shutterstock convention for mason components
 autocmd BufNewFile,BufRead *.rhtml      set filetype=html              " interpret .rhtml files (embedded ruby templates) as html to get some highlighting
 autocmd BufNewFile,BufRead *.yaml,*.yml set filetype=yaml
+autocmd BufNewFile,BufRead *.go         set filetype=go
 autocmd BufNewFile,BufRead *.pde        set filetype=cpp               " arduino cpp files
 autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text files, always limit the width of text to 78 characters
 
@@ -61,16 +62,18 @@ autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text
 "autocmd FileType mason set tabstop=2 shiftwidth=2                     " for mason files, tabs are 2 spaces wide (cause that's dan's preference)
 autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
 autocmd FileType javascript set expandtab tabstop=2 shiftwidth=2       " for javascript, always use two spaces to indent
-autocmd FileType python set expandtab                                  " for python, indent with spaces
+autocmd FileType ruby set expandtab tabstop=2 shiftwidth=2       " for ruby, always use two spaces to indent
+autocmd FileType python,ruby set expandtab                                  " for python, indent with spaces
 autocmd FileType perl,mason set path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
 
 function GetCommentChar()
 	let comment = {}
-	let comment.sql    = '--'
-	let comment.vim    = '"'
-	let comment.css    = [ '\/\*', '\*\/' ]
-	let comment.cpp    = '\/\/'
+	let comment.sql        = '--'
+	let comment.vim        = '"'
+	let comment.css        = [ '\/\*', '\*\/' ]
+	let comment.cpp        = '\/\/'
 	let comment.javascript = '\/\/'
+	let comment.go         = '\/\/'
 
 	if !has_key(comment, &filetype)
 		return [ '#', '' ]
@@ -93,8 +96,8 @@ function ToggleComment()
 		execute 's/^' . b:comment_start . '//'
 		execute 's/' . b:comment_end . '$//'
 	else
-		s/^/\=b:comment_start/
-		s/$/\=b:comment_end/
+		execute 's/^/' . b:comment_start . '/'
+		execute 's/$/' . b:comment_end . '/'
 	endif
 endfunction
 map <silent> X :call ToggleComment()<cr>j
