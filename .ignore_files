@@ -1,0 +1,4 @@
+.ignore_files
+.git
+.gitignore
+install.py
