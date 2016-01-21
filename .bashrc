@@ -3,7 +3,8 @@ export MYSQL_PS1="\h> "
 
 # put the name of the current command in the prompt so screen can get it
 #export PS1="\u@\h \w"'\[\033k\033\\\]\$ '
-export PS1="\u@\\033[38;5;$((($(hostname | cksum | cut -c1-3) + 200) % 256))m\h\\033[0m \w\$ "
+#export PS1="\u@\h \w\$ "
+export PS1="\u@\[\e[38;5;$((($(hostname | cksum | cut -c2-3) + 200) % 256))m\]\h\[\e[0m\] \w\$ "
 
 # set vim as my editor
 export EDITOR=`which vim`
