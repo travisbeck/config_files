@@ -58,13 +58,9 @@ autocmd BufNewFile,BufRead *.pde        set filetype=cpp               " arduino
 autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text files, always limit the width of text to 78 characters
 
 " set some options on a per-filetype basis
-"autocmd FileType html,css set expandtab tabstop=2 shiftwidth=2        " for CSS and HTML, indent using 2 spaces
-"autocmd FileType mason set tabstop=2 shiftwidth=2                     " for mason files, tabs are 2 spaces wide (cause that's dan's preference)
-autocmd FileType yaml,yml set expandtab tabstop=2 shiftwidth=2         " for yaml, always use two spaces to indent
-autocmd FileType javascript set expandtab tabstop=2 shiftwidth=2       " for javascript, always use two spaces to indent
-autocmd FileType ruby set expandtab tabstop=2 shiftwidth=2       " for ruby, always use two spaces to indent
-autocmd FileType python,ruby set expandtab                                  " for python, indent with spaces
-autocmd FileType perl,mason set path=.,/home/ssuser/lib/  " in perl/mason use ':' as a word character (for module names)
+autocmd FileType javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
+autocmd FileType python,ruby set expandtab                           " indent with spaces
+autocmd FileType go,perl set noexpandtab                             " indent with tabs
 
 function GetCommentChar()
 	let comment = {}
