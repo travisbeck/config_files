@@ -1,10 +1,35 @@
+if [ -f "$HOME/.git-prompt.sh" ]; then
+	source "$HOME/.git-prompt.sh"
+fi
+
+if [ -f "$HOME/.git-completion.bash" ]; then
+	source ~/.git-completion.bash
+fi
+
 # set the mysql prompt to the host I am connected to
 export MYSQL_PS1="\h> "
 
-# put the name of the current command in the prompt so screen can get it
-#export PS1="\u@\h \w"'\[\033k\033\\\]\$ '
-#export PS1="\u@\h \w\$ "
-export PS1="\u@\[\e[38;5;$((($(hostname | cksum | cut -c2-3) + 200) % 256))m\]\h\[\e[0m\] \w\$ "
+function __prompt_color() {
+	text="$1"
+	color=$(($(echo $1 | cksum | cut -c1-3) % 256))
+	if [ -n "$text" ]; then
+		printf "\[\x1b[38;5;${color}m\]${text}\[\x1b[0m\]";
+	fi
+}
+
+function __color_branch() {
+	text=$(__prompt_color "$(__git_ps1 '%s')")
+	if [ -n "$text" ]; then
+		echo " ($text)"
+	fi
+}
+
+COLOR_HOSTNAME=$(__prompt_color $(hostname -s))
+
+function set_prompt() {
+#	PS1="\u@\h \w\$ "
+	PS1="\u@$COLOR_HOSTNAME \w$(__color_branch)\$ "
+}
 
 # set vim as my editor
 export EDITOR=`which vim`
@@ -23,20 +48,20 @@ export DISPLAY=:0.0
 export CLICOLOR=true
 
 # save more commands in history
-export HISTSIZE=5000
-export HISTFILESIZE=5000
+export HISTSIZE=1000000
+export HISTFILESIZE=1000000
 
 # don't store duplicate commands in bash history
 export HISTCONTROL=ignoreboth
 
 # append bash history after every command (so multiple terminals share the same history)
 shopt -s histappend
-export PROMPT_COMMAND='history -a'
+export PROMPT_COMMAND="history -a; set_prompt; $PROMPT_COMMAND"
 
 # multi-line commands should be stored as a single command
 shopt -s cmdhist
 
-export NVM_DIR="/Users/travis/.nvm"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
