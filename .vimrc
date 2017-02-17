@@ -1,12 +1,25 @@
+if filereadable(expand('~/.vim/autoload/plug.vim'))
+    call plug#begin('~/.vim/plugged')
+
+    " run :PlugInstall to install new plugins
+    Plug 'nvie/vim-flake8'
+    Plug 'craigemery/vim-autotag'
+
+    call plug#end()
+endif
+
 set nocompatible
 
 " sane editing options
 set tabstop=4                  " number of spaces that a <Tab> in the file counts for
 set shiftwidth=4               " number of spaces to use for each step of (auto)indent
+set expandtab
 set whichwrap=b,s,h,l,<,>,[,]  " allow the cursor to wrap on anything
 set backspace=2                " fully enable backspace to delete anything in insert mode
 set noshowmatch                " don't go back to the matching bracket (annoying)
 set exrc                       " use a local vimrc on a per-directory basis (for Vroom::Vroom support)
+set secure                     " disable unsafe commands in project-specific .vimrc files
+set tags=.git/tags;.           " findup from the git dir to find tags files
 
 " enable syntax highlighting
 syntax on                      " turn on syntax highlighting
@@ -48,6 +61,12 @@ set diffopt+=iwhite                  " ignore whitespace in diffmode
 set statusline=%f\ %y%r%m%=col\ %c\ line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
 set laststatus=2                            " always show the status line
 
+function StyleCheck()
+    if &filetype == 'python' && executable('flake8')
+        call Flake8()
+    endif
+endfunction
+
 " set filetype for some more obscure file extensions
 autocmd BufNewFile,BufRead *.t          set filetype=perl
 autocmd BufNewFile,BufRead *.md,*.mh    set filetype=mason             " shutterstock convention for mason components
@@ -56,10 +75,13 @@ autocmd BufNewFile,BufRead *.yaml,*.yml set filetype=yaml
 autocmd BufNewFile,BufRead *.go         set filetype=go
 autocmd BufNewFile,BufRead *.pde        set filetype=cpp               " arduino cpp files
 autocmd BufNewFile,BufRead *.txt        set tw=78                      " in text files, always limit the width of text to 78 characters
+autocmd BufWritePost       *.py         call StyleCheck()              " call flake8 after write for python files
+autocmd BufReadCmd *.egg,*.jar,*.xpi    call zip#Browse(expand("<amatch>")) " treat these file extensions as zip files for browsing
 
 " set some options on a per-filetype basis
-autocmd FileType javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
-autocmd FileType python,ruby set expandtab                           " indent with spaces
+autocmd FileType python,javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
+autocmd FileType python set diffopt-=iwhite                  " don't ignore whitespace in python
+autocmd FileType ruby set expandtab                           " indent with spaces
 autocmd FileType go,perl set noexpandtab                             " indent with tabs
 
 function GetCommentChar()
@@ -120,10 +142,15 @@ cnoremap <C-B>    <Left>
 cnoremap <C-F>    <Right>
 " delete character under cursor
 cnoremap <C-D>    <Del>
-"" back one word
-"cnoremap <M-B>    <S-Left>
-"" forward one word
-"cnoremap <M-F>    <S-Right>
+" back one word
+cnoremap <Esc>b    <S-Left>
+" forward one word
+cnoremap <Esc>f    <S-Right>
+" delete back one word
+cmap <Esc><C-?> <M-BS>
+cmap <Esc><C-h> <M-BS>
+cmap <Esc><BS> <M-BS>
+cnoremap <M-BS>    <C-W>
 " remap ctrl-p/ctrl-n in command mode to take whatever text has already been
 " entered and search with that (what up/down do by default)
 cnoremap <C-P> <Up>
@@ -142,6 +169,7 @@ endif
 if &term == "screen" || &term == "xterm" || &term == "screen-bce"
 	set title
 endif
+let &titleold = fnamemodify(getcwd(), ':~:t')
 
 " highlight questionable whitespace differently depending on whether
 " or not expandtab is set
@@ -163,12 +191,20 @@ endfunction
 
 " highlight long lines - see http://vim.wikia.com/wiki/Highlight_long_lines
 highlight LongLines ctermbg=lightgrey guibg=lightgrey
-"autocmd FileType perl,mason 2match LongLines /^.\{160,\}$/
+"autocmd FileType python 2match LongLines /^.\{120,\}$/
 "autocmd BufWinEnter * let w:m1=matchadd('Search', '\%<121v.\%>77v', -1)
-"autocmd BufWinEnter * let w:m2=matchadd('LongLines', '\%>120v.\+', -1)
+autocmd BufWinEnter *.py let w:m2=matchadd('LongLines', '\%>120v.\+', -1)
 
 " plugins
 source $VIMRUNTIME/macros/matchit.vim    " allow % to match anything that filetype plugins can, not just '{' or '(' or '['
 
 " figure out a way to open multiple buffers by default in vertical split
 "vertical ball                            " if multiple buffers were opened, vertically split the screen to show all of them
+
+runtime plugin/vcscommand.vim
+function! Diffbranch()
+    let mergebase = system('git merge-base origin/master HEAD')
+    execute VCSVimDiff mergebase
+endfunction
+com! -nargs=* Diff call Diffbranch()
+
