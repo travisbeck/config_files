@@ -4,6 +4,13 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
     " run :PlugInstall to install new plugins
     Plug 'nvie/vim-flake8'
     Plug 'craigemery/vim-autotag'
+    Plug 'taylor/vim-zoomwin'
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'ivalkeen/vim-simpledb'
+    Plug 'tonchis/vim-to-github'
+    Plug 'fatih/vim-go'
+    Plug 'psf/black'
+    " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 
     call plug#end()
 endif
@@ -19,7 +26,7 @@ set backspace=2                " fully enable backspace to delete anything in in
 set noshowmatch                " don't go back to the matching bracket (annoying)
 set exrc                       " use a local vimrc on a per-directory basis (for Vroom::Vroom support)
 set secure                     " disable unsafe commands in project-specific .vimrc files
-set tags=.git/tags;.           " findup from the git dir to find tags files
+set tags+=.git/tags;~          " recursively look from current dir for a git dir with tags files
 
 " enable syntax highlighting
 syntax on                      " turn on syntax highlighting
@@ -61,15 +68,22 @@ set diffopt+=iwhite                  " ignore whitespace in diffmode
 set statusline=%f\ %y%r%m%=col\ %c\ line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
 set laststatus=2                            " always show the status line
 
+ab pdb import pdb;pdb.set_trace()
+
 function StyleCheck()
-    if &filetype == 'python' && executable('flake8')
-        call Flake8()
+    if &filetype == 'python'
+        " TODO: this should only get executed on files in source control
+        " if executable('black')
+        "     execute ':Black'
+        " endif
+        if executable('flake8')
+            call Flake8()
+        endif
     endif
 endfunction
 
 " set filetype for some more obscure file extensions
 autocmd BufNewFile,BufRead *.t          set filetype=perl
-autocmd BufNewFile,BufRead *.md,*.mh    set filetype=mason             " shutterstock convention for mason components
 autocmd BufNewFile,BufRead *.rhtml      set filetype=html              " interpret .rhtml files (embedded ruby templates) as html to get some highlighting
 autocmd BufNewFile,BufRead *.yaml,*.yml set filetype=yaml
 autocmd BufNewFile,BufRead *.go         set filetype=go
@@ -79,10 +93,11 @@ autocmd BufWritePost       *.py         call StyleCheck()              " call fl
 autocmd BufReadCmd *.egg,*.jar,*.xpi    call zip#Browse(expand("<amatch>")) " treat these file extensions as zip files for browsing
 
 " set some options on a per-filetype basis
-autocmd FileType python,javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
+autocmd BufNewFile,BufRead,BufEnter /Users/tbeck/code/optimizely/* set tabstop=2 shiftwidth=2
+autocmd FileType javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
 autocmd FileType python set diffopt-=iwhite                  " don't ignore whitespace in python
-autocmd FileType ruby set expandtab                           " indent with spaces
-autocmd FileType go,perl set noexpandtab                             " indent with tabs
+autocmd FileType python,ruby set expandtab                   " indent with spaces
+autocmd FileType go,perl set noexpandtab                     " indent with tabs
 
 function GetCommentChar()
 	let comment = {}
@@ -156,6 +171,44 @@ cnoremap <M-BS>    <C-W>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
+" Maximum number of tab pages to be opened by -p
+set tabpagemax=100
+
+" map Left/Right to switch tabs
+nnoremap <Left> :tabprevious<CR>
+nnoremap <Right> :tabnext<CR>
+
+" switch all open buffers to tabs
+"nnoremap v :vertical unhide<CR>:tabo<CR>
+"
+" switch all tabs to vertical split
+"nnoremap t :tab unhide<CR>
+
+" map Alt-Left/Alt-Right to move the current tab left/right
+nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
+nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . (tabpagenr()+1)<CR>
+
+" make '-' hide a buffer
+let g:zappedbuffers = []
+function! ZapBuffer()
+    call add(g:zappedbuffers, bufnr('%'))
+    hide
+endfunction
+command! ZapBuffer call ZapBuffer()
+nnoremap <silent> - :call ZapBuffer()<cr>
+
+" and make '+' unhide it in a vertical split
+function! UnzapBuffer()
+    if len(g:zappedbuffers) > 0
+      let num = g:zappedbuffers[0]
+      let g:zappedbuffers = g:zappedbuffers[1:]
+      execute 'vert sb ' . num
+    endif
+endfunction
+nnoremap <silent> + :call UnzapBuffer()<cr>
+
+" map C-Enter to open tags in a new tab
+nnoremap  <C-w><C-]><C-w>T
 
 " set filename in the screen status line if we are using screen
 " see http://www.vim.org/tips/tip.php?tip_id=1126
@@ -180,7 +233,7 @@ function HighlightWhitespace()
 		" highlight tabs not at the beginning of the line (but allow # for comments and % for mason),
 		" and trailing whitespace not followed by the cursor
 		" (maybe think about highlighting leading spaces not in denominations of tabstop?)
-		match QuestionableWhitespace /\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
+		match QuestionableWhitespace /^\t+\|\(^[%#]\?\t*\)\@<!\t\|[ \t]\+\(\%#\)\@!$/
 	else
 		" highlight any leading spaces (TODO: ignore spaces in formatted assignment statements),
 		" tabs not at the beginning of the line (but allow # for comments and % for mason),
@@ -206,5 +259,38 @@ function! Diffbranch()
     let mergebase = system('git merge-base origin/master HEAD')
     execute VCSVimDiff mergebase
 endfunction
-com! -nargs=* Diff call Diffbranch()
+"com! -nargs=* Diff call Diffbranch()
+
+function! Mergebase(...)
+    let mergebase = system('git merge-base ' . a:1 . ' HEAD')
+    let cmd = 'VCSVimDiff ' . mergebase
+    return mergebase
+endfunction
+
+function! DiffAllTabs(...)
+    if(a:0 > 0)
+        let mergebase = system('git merge-base ' . a:1 . ' HEAD')
+        echo mergebase
+        let cmd = 'VCSVimDiff ' . mergebase
+        echo cmd
+        execute cmd
+    endif
+endfunction
+com! -nargs=* Diffbase call DiffAllTabs(<f-args>)
+
+" CtrlP
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_switch_buffer = 'etvh'
+let g:ctrlp_custom_ignore = { 'dir': '\.git$\|\.hg$\|\.svn$' }
+let g:ctrlp_user_command = {
+  \ 'types': {
+    \ 1: ['.git', 'cd %s && git ls-files . -co --exclude-standard'],
+  \ },
+  \ 'fallback': 'find %s -type f'
+\ }
+" default to opening in new tab
+let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<c-t>'],
+    \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
+    \ }
 

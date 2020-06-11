@@ -53,7 +53,7 @@ hi link Exception Statement
 hi Conditional ctermfg=244 gui=bold guifg=#808080
 hi Operator ctermfg=24 guifg=#005f87
 
-hi Type ctermfg=66 guifg=none
+hi Type ctermfg=66 guifg=NONE
 hi link StorageClass Type
 hi link Structure Type
 hi link Typedef Type
@@ -71,16 +71,16 @@ hi DiffText cterm=bold ctermbg=211 gui=bold guibg=#ff87af
 " cursor groups
 "hi Cursor ctermfg=white ctermbg=black guifg=white guibg=black
 hi CursorColumn guibg=gray90
-hi CursorIM gui=None
+hi CursorIM gui=NONE
 hi CursorLine guibg=gray90
 
 hi Visual ctermbg=255 guibg=#eeeeee
 hi VisualNOS gui=bold,underline
 "
 " status line and split lines
-hi StatusLine cterm=none ctermfg=196 ctermbg=255 gui=none guifg=#ff0000 guibg=#eeeeee
-hi StatusLineNC cterm=none ctermfg=245 ctermbg=255 gui=none guifg=#8a8a8a guibg=#eeeeee
-hi VertSplit cterm=none ctermfg=245 ctermbg=255 gui=none guifg=#8a8a8a guibg=#eeeeee
+hi StatusLine cterm=NONE ctermfg=196 ctermbg=255 gui=NONE guifg=#ff0000 guibg=#eeeeee
+hi StatusLineNC cterm=NONE ctermfg=245 ctermbg=255 gui=NONE guifg=#8a8a8a guibg=#eeeeee
+hi VertSplit cterm=NONE ctermfg=245 ctermbg=255 gui=NONE guifg=#8a8a8a guibg=#eeeeee
 
 hi NonText ctermfg=31 guifg=#0087af
 
