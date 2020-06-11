@@ -26,10 +26,27 @@ function __color_branch() {
 
 COLOR_HOSTNAME=$(__prompt_color $(hostname -s))
 
+function __virtualenv_info() {
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # In case you don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo " (venv:$venv)"
+}
+
+
 function set_prompt() {
 #	PS1="\u@\h \w\$ "
-	PS1="\u@$COLOR_HOSTNAME \w$(__color_branch)\$ "
+	PS1="\u@$COLOR_HOSTNAME \w$(__color_branch)$(__virtualenv_info)\$ "
 }
+
+# disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
 
 # set vim as my editor
 export EDITOR=`which vim`
@@ -48,8 +65,8 @@ export DISPLAY=:0.0
 export CLICOLOR=true
 
 # save more commands in history
-export HISTSIZE=1000000
-export HISTFILESIZE=1000000
+export HISTSIZE=10000000
+export HISTFILESIZE=10000000
 
 # don't store duplicate commands in bash history
 export HISTCONTROL=ignoreboth
