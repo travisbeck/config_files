@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -108,8 +108,9 @@ export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=10000000
 export HISTFILESIZE=10000000
 export SAVEHIST=$HISTSIZE
-setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
-setopt SHARE_HISTORY             # Share history between all sessions.
+setopt APPEND_HISTORY            # Append history on close
+#setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+unsetopt SHARE_HISTORY           # Don't share history between all sessions.
 setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
 setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
 setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
@@ -130,7 +131,7 @@ if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
   GPG_TTY=$(tty)
   export GPG_TTY
 else
-  eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+  eval $(gpg-agent --daemon)
 fi
 
 eval "$(pyenv init -)"
@@ -149,4 +150,6 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+eval "$(direnv hook zsh)"
 
+export TZ_LIST="US/Central;Austin,US/Eastern;Columbia,Europe/Paris;Sweden,Pacific/Auckland;New Zealand"
