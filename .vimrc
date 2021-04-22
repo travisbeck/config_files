@@ -10,7 +10,7 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
     Plug 'tonchis/vim-to-github'
     Plug 'fatih/vim-go'
     Plug 'psf/black'
-    " Plug 'python-mode/python-mode', { 'branch': 'develop' }
+    " Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 
     call plug#end()
 endif
@@ -62,13 +62,13 @@ set mousehide                  " hide the mouse pointer while typing
 " fix completion modes
 set completeopt=menu,preview,longest " insert any common text for insert completion (and show a menu)
 set wildmode=longest,list            " in ex mode, complete longest common string, then list alternatives (like bash)
-set diffopt+=iwhite                  " ignore whitespace in diffmode
+set diffopt-=iwhite                  " don't ignore whitespace in diffmode
 
 " set up a real statusline
 set statusline=%f\ %y%r%m%=col\ %c\ line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
 set laststatus=2                            " always show the status line
 
-ab pdb import pdb;pdb.set_trace()
+ab pdb import pdb; pdb.set_trace()
 
 function StyleCheck()
     if &filetype == 'python'
