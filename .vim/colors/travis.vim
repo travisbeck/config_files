@@ -10,7 +10,7 @@ if exists("syntax_on")
 endif
 let g:colors_name = "travis"
 
-hi Normal ctermfg=239 guifg=#4e4e4e
+hi Normal ctermfg=245 guifg=#4e4e4e
 
 " as light of a gray that's readable for comments
 hi Comment ctermfg=144 guifg=#afaf87

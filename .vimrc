@@ -11,6 +11,12 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
     Plug 'fatih/vim-go'
     Plug 'psf/black'
     " Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+    Plug 'pangloss/vim-javascript'
+    Plug 'leafgarland/typescript-vim'
+    Plug 'peitalin/vim-jsx-typescript'
+    Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+    Plug 'jparise/vim-graphql'
+    Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
     call plug#end()
 endif
@@ -62,7 +68,7 @@ set mousehide                  " hide the mouse pointer while typing
 " fix completion modes
 set completeopt=menu,preview,longest " insert any common text for insert completion (and show a menu)
 set wildmode=longest,list            " in ex mode, complete longest common string, then list alternatives (like bash)
-set diffopt-=iwhite                  " don't ignore whitespace in diffmode
+"set diffopt-=iwhite                  " don't ignore whitespace in diffmode
 
 " set up a real statusline
 set statusline=%f\ %y%r%m%=col\ %c\ line\ %1*%l%*/%L " set up statusline to show file, read-only, modified, file type, and line number
@@ -98,6 +104,10 @@ autocmd FileType javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shift
 autocmd FileType python set diffopt-=iwhite                  " don't ignore whitespace in python
 autocmd FileType python,ruby set expandtab                   " indent with spaces
 autocmd FileType go,perl set noexpandtab                     " indent with tabs
+
+" sync the entire file for js since it seems to get out of sync a lot
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
 
 function GetCommentChar()
 	let comment = {}

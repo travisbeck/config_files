@@ -1,7 +1,9 @@
 [user]
-	email = travis@brontosaurus.net
+	email = 91700+travisbeck@users.noreply.github.com
 	name = Travis Beck
 	editor = vim
+[alias]
+	cleanup = !bash -c \"comm -12 <(git branch | sed 's/[ *]*//g') <(git remote prune origin | sed 's/^.*origin\\\\///g') | xargs git branch -D\"
 [merge]
 	tool = vimdiff
 [push]
