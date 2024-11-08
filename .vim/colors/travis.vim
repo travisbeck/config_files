@@ -84,6 +84,11 @@ hi VertSplit cterm=NONE ctermfg=245 ctermbg=255 gui=NONE guifg=#8a8a8a guibg=#ee
 
 hi NonText ctermfg=31 guifg=#0087af
 
+hi SignColumn guifg=darkblue guibg=NONE ctermbg=NONE
+hi GitGutterAdd    guifg=#009900 ctermfg=28
+hi GitGutterChange guifg=#bbbb00 ctermfg=183
+hi GitGutterDelete guifg=#ff2222 ctermfg=160
+
 " just boldify the parenthese, to make it slightly clearer, don't knock me over the head or anything
 "hi clear MatchParen
 "hi MatchParen term=bold cterm=bold gui=bold
@@ -105,7 +110,6 @@ hi NonText ctermfg=31 guifg=#0087af
 "hi PmenuThumb gui=reverse
 "hi Question gui=bold guifg=seagreen
 "hi Scrollbar	
-"hi SignColumn guifg=darkblue guibg=grey
 "hi SpecialKey guifg=blue
 "hi SpellBad gui=undercurl
 "hi SpellCap gui=undercurl

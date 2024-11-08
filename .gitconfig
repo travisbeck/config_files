@@ -3,7 +3,8 @@
 	name = Travis Beck
 	editor = vim
 [alias]
-	cleanup = !bash -c \"comm -12 <(git branch | sed 's/[ *]*//g') <(git remote prune origin | sed 's/^.*origin\\\\///g') | xargs git branch -D\"
+	cleanup = !bash -c \"comm -12 <(git branch | sed 's/[ *]*//g' | sort) <(git remote prune origin --dry-run | sed 's/^.*origin\\\\///g' | sort) | xargs git branch -D\"
+	stash = git stash -u
 [merge]
 	tool = vimdiff
 [push]
@@ -21,3 +22,9 @@
 	enabled = true
 [init]
 	templatedir = ~/.git_template
+[branch]
+    sort = -committerdate
+[commit]
+	verbose = true
+[rebase]
+	updateRefs = true

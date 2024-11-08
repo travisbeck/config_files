@@ -3,7 +3,7 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
 
     " run :PlugInstall to install new plugins
     Plug 'nvie/vim-flake8'
-    Plug 'craigemery/vim-autotag'
+    "Plug 'craigemery/vim-autotag'
     Plug 'taylor/vim-zoomwin'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'ivalkeen/vim-simpledb'
@@ -16,7 +16,10 @@ if filereadable(expand('~/.vim/autoload/plug.vim'))
     Plug 'peitalin/vim-jsx-typescript'
     Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
     Plug 'jparise/vim-graphql'
-    Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+    "Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+    "Plug 'ludovicchabant/vim-gutentags'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'dense-analysis/ale'
 
     call plug#end()
 endif
@@ -39,7 +42,6 @@ syntax on                      " turn on syntax highlighting
 filetype indent plugin on      " set indentation rules based on file type and enable filetype plugins (for matchit.vim)
 syntax sync minlines=200       " always sync syntax highlighting at least 200 lines back
 set t_Co=256                   " use 256 colors
-"colorscheme default
 colorscheme travis
 
 " boldify the line number in the status line
@@ -76,6 +78,9 @@ set laststatus=2                            " always show the status line
 
 ab pdb import pdb; pdb.set_trace()
 
+" use gnu tar on mac os x so you can edit tar.gz files
+let g:tar_cmd="/usr/local/bin/gtar"
+
 function StyleCheck()
     if &filetype == 'python'
         " TODO: this should only get executed on files in source control
@@ -100,7 +105,7 @@ autocmd BufReadCmd *.egg,*.jar,*.xpi    call zip#Browse(expand("<amatch>")) " tr
 
 " set some options on a per-filetype basis
 autocmd BufNewFile,BufRead,BufEnter /Users/tbeck/code/optimizely/* set tabstop=2 shiftwidth=2
-autocmd FileType javascript,html,css,ruby,yaml,yml set expandtab tabstop=2 shiftwidth=2
+autocmd FileType javascript,html,css,ruby,yaml,yml,typescript,typescriptreact,tsx,jsx set expandtab tabstop=2 shiftwidth=2
 autocmd FileType python set diffopt-=iwhite                  " don't ignore whitespace in python
 autocmd FileType python,ruby set expandtab                   " indent with spaces
 autocmd FileType go,perl set noexpandtab                     " indent with tabs
@@ -116,6 +121,8 @@ function GetCommentChar()
 	let comment.css        = [ '\/\*', '\*\/' ]
 	let comment.cpp        = '\/\/'
 	let comment.javascript = '\/\/'
+	let comment.typescript = '\/\/'
+	let comment.typescriptreact = '\/\/'
 	let comment.go         = '\/\/'
 
 	if !has_key(comment, &filetype)
@@ -234,6 +241,12 @@ if &term == "screen" || &term == "xterm" || &term == "screen-bce"
 endif
 let &titleold = fnamemodify(getcwd(), ':~:t')
 
+function! g:OpenTestFile()
+    let testfile = expand('%:r') . '.spec.ts'
+    execute "tabedit" testfile
+endfunction
+command! T :call OpenTestFile()
+
 " highlight questionable whitespace differently depending on whether
 " or not expandtab is set
 highlight QuestionableWhitespace ctermbg=green guibg=green
@@ -304,3 +317,101 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
     \ }
 
+"let g:gutentags_cache_dir = expand('~/.cache/vim/ctags/')
+"let g:gutentags_generate_on_new = 1
+"let g:gutentags_generate_on_missing = 1
+"let g:gutentags_generate_on_write = 1
+"let g:gutentags_generate_on_empty_buffer = 0
+"let g:gutentags_ctags_extra_args = [
+"      \ '--tag-relative=yes',
+"      \ '--fields=+ailmnS',
+"      \ ]
+"let g:gutentags_ctags_exclude = [
+"      \ '*.git', '*.svg', '*.hg',
+"      \ '*/tests/*',
+"      \ 'build',
+"      \ 'dist',
+"      \ '*sites/*/files/*',
+"      \ 'bin',
+"      \ 'bower_components',
+"      \ 'cache',
+"      \ 'compiled',
+"      \ 'docs',
+"      \ 'example',
+"      \ 'bundle',
+"      \ 'vendor',
+"      \ '*.md',
+"      \ '*-lock.json',
+"      \ '*.lock',
+"      \ '*bundle*.js',
+"      \ '*build*.js',
+"      \ '.*rc*',
+"      \ '*.json',
+"      \ '*.min.*',
+"      \ '*.map',
+"      \ '*.bak',
+"      \ '*.zip',
+"      \ '*.pyc',
+"      \ '*.class',
+"      \ '*.sln',
+"      \ '*.Master',
+"      \ '*.csproj',
+"      \ '*.tmp',
+"      \ '*.csproj.user',
+"      \ '*.cache',
+"      \ '*.import pdb; pdb.set_trace()',
+"      \ 'tags*',
+"      \ 'cscope.*',
+"      \ '*.css',
+"      \ '*.less',
+"      \ '*.scss',
+"      \ '*.exe', '*.dll',
+"      \ '*.mp3', '*.ogg', '*.flac',
+"      \ '*.swp', '*.swo',
+"      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+"      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+"      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+"      \ ]
+
+set updatetime=100
+
+let g:ale_lint_delay = 0
+"let g:ale_set_loclist = 1
+let g:ale_list_window_size = 7
+let g:ale_open_list = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+"let g:ale_keep_list_window_open = 0
+let g:ale_javascript_eslint_executable = 'xd'
+let g:ale_javascript_eslint_use_global = 0
+
+"function! FormatPrisma(buffer) abort
+"    return {
+"    \   'command': 'yarn prisma format -'
+"    \}
+"endfunction
+"execute ale#fix#registry#Add('prisma', 'FormatPrisma', ['prisma'], 'format prisma files')
+"    \ 'prisma': ['prisma'],
+
+let g:ale_fixers = {
+    \ 'javascript': ['eslint', 'prettier'],
+    \ 'typescript': ['eslint', 'prettier'],
+    \ 'typescriptreact': ['eslint', 'prettier'],
+    \ 'scss': ['prettier'],
+    \ 'html': ['prettier'],
+    \ 'json': ['eslint', 'prettier'],
+    \ 'graphql': ['eslint', 'prettier'],
+    \ 'terraform': ['terraform'],
+    "\ 'sql': ['pgformatter'],
+    \ }
+let g:ale_fix_on_save = 1
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_sql_pgformatter_options = '-u 1'
+highlight ALEErrorSign ctermbg=NONE ctermfg=red
+highlight ALEWarningSign ctermbg=NONE ctermfg=227
+
+"" run Prettier on every change
+"let g:prettier#quickfix_enabled = 0  " quickfix would be annoying in this situation
+"autocmd TextChanged,InsertLeave *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+"autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
